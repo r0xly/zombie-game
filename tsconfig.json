@@ -1,0 +1,21 @@
+{
+    "compilerOptions": {
+        // Settings for the compiler
+        "outDir": "./dist/",
+        "sourceMap": true,
+        "target": "es2015",
+        "module": "ESNext",
+    
+        // Settings for linking source files
+        "moduleResolution": "node",
+        "esModuleInterop": true,
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "experimentalDecorators": true,
+
+    },
+    // Folder for your code
+    "include": [
+        "./src/**/*"
+    ]
+}
