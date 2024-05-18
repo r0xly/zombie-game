@@ -7,7 +7,7 @@ import { Player } from "./player";
 export class Zombie extends Sprite
 {
     
-    maxSpeed = 3 + Math.random() * 5;
+    maxSpeed = 6
     maxforce = 0.3;
     velocity = new Point(0, 0);
     acceleration = new Point(0, 0);
@@ -26,7 +26,7 @@ export class Zombie extends Sprite
     }
 
 
-    seek(player: Player)
+    seek(player)
     {
         let x = player.x + (player.velocity.x || 0) * 100;
         let y = player.y - (player.velocity.y || 0) * 100;
@@ -63,7 +63,7 @@ export class Zombie extends Sprite
 
     seperate(zombies: Zombie[])
     {
-        let desiredSeperation = 110;
+        let desiredSeperation = 100;
         let sum = new Point();
 
         let count = 0;
@@ -96,7 +96,63 @@ export class Zombie extends Sprite
 
             this.applyForce(steer);
         }
+    }
 
+    align(zombies: Zombie[])
+    {
+        const neighborDistance = 200;
+        let sum = new Point();
+        let count = 0;
+
+        for (let zombie of zombies)
+        {
+            const distance = this.position
+                .subtract(zombie.position)
+                .magnitude();
+
+            if (this !== zombie && distance < neighborDistance)
+            {
+                sum = sum.add(zombie.velocity);
+                count++
+            }
+        }
+
+        if (count > 0)
+        {
+            sum = sum
+                .multiplyScalar(1 / count)
+                .normalize()
+                .multiplyScalar(this.maxSpeed);
+            
+            const steer = limitPoint(sum.subtract(this.velocity), this.maxSpeed)
+            this.applyForce(steer)
+        }
+    }
+
+    cohesion(zombies: Zombie[]) 
+    {
+        const neighborDistance = 200;
+        let sum = new Point();
+        let count = 0;
+
+        for (let zombie of zombies)
+        {
+            const distance = this.position
+                .subtract(zombie.position)
+                .magnitude();
+
+            if (zombie !== this  && distance < neighborDistance)
+            {
+                sum.add(zombie.position);
+                count++;
+            }
+        }
+
+        if (count > 0)
+        {
+            sum = sum.multiplyScalar(1 / count);
+            this.seek({ x: sum.x, y: sum.y, velocity: new Point() });
+        }
     }
 
     applyForce(force: Point)

@@ -42,7 +42,6 @@ export class Blaster extends Sprite
         
         this.nextFireTick = currentTick + this.data.fireRate;
 
-
         const velcoity = this
             .getGlobalPosition()
             .subtract(new Point(x, y))

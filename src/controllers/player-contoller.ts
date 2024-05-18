@@ -3,7 +3,7 @@ import { Player } from "../objects/player";
 import { InputController } from "./input-controller";
 import { Blaster } from "../objects/blaster";
 
-const PLAYER_SPEED = 6;
+const PLAYER_SPEED = 7;
 
 export class PlayerController
 {

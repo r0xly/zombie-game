@@ -58,7 +58,7 @@ async function start()
 		texture: Assets.get("blaster"),
 		anchorPoint: new Point(0.6, 0.6),
 		offset: new Point(-10, 0),
-		projectileSpeed: 30,
+		projectileSpeed: 60,
 		fireRate: 100,
 	});
 
@@ -82,6 +82,9 @@ async function start()
 				zombie.wander(t);
 
 			zombie.seperate(zombies)
+			zombie.cohesion(zombies);
+			zombie.align(zombies);
+
 			if (zombie.x < -10)
 				zombie.x = app.screen.width + 10;
 			if (zombie.x > app.screen.width + 10)
