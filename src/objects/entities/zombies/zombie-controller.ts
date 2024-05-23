@@ -1,6 +1,6 @@
 import { Container, Point, Ticker } from "pixi.js";
-import { Zombie } from "../objects/zombie";
-import { limitPoint } from "../util/limit-point";
+import { Zombie } from "./zombie";
+import { limitPoint } from "../../../util/point-util";
 
 export const zombieContainer = new Container();
 export const zombies: Zombie[] = [];
@@ -23,8 +23,6 @@ export function updateZombies(ticker: Ticker)
             zombies.splice(i, 1);
             continue;
         }
-
-
 
         zombie.velocity = limitPoint(zombie.velocity.add(zombie.acceleration.multiplyScalar(ticker.deltaTime)), zombie.maxSpeed);
         zombie.position = zombie.position.add(zombie.velocity.multiplyScalar(ticker.deltaTime));

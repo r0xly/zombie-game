@@ -12,3 +12,10 @@ export function limitPoint(point: Point, limit: number)
 
     return point;
 }
+
+export function randomUnitPoint()
+{
+    const theta = Math.random() * 2 * Math.PI;
+
+    return new Point(Math.cos(theta), Math.sin(theta));
+}

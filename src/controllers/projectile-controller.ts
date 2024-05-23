@@ -1,6 +1,6 @@
 import { Container, Ticker } from "pixi.js";
 import { Projectile } from "../objects/projectile";
-import { zombies } from "../containers/zombie-container";
+import { zombies } from "../objects/entities/zombies/zombie-controller";
 
 const projectiles: Projectile[] = [];
 

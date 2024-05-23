@@ -5,9 +5,9 @@ import { PlayerController } from './controllers/player-contoller';
 import { Blaster } from './objects/blaster';
 import { InputController } from './controllers/input-controller';
 import { Projectile } from './objects/projectile';
-import { Zombie } from './objects/zombie';
+import { Zombie } from './objects/entities/zombies/zombie';
 import { projectileContainer, updateProjectiles } from './controllers/projectile-controller';
-import { addZombie, updateZombies, zombieContainer, zombies } from './containers/zombie-container';
+import { addZombie, updateZombies, zombieContainer, zombies } from './objects/entities/zombies/zombie-controller';
 
 const app = new Application();
 
@@ -65,10 +65,8 @@ async function start()
 	player.equipWeapon(blaster);
 
 
-	let t = 0;
 	app.ticker.add(ticker => 
 	{
-		t++;
 		playerController.update(ticker);
 		updateProjectiles(ticker);
 		updateZombies(ticker);
@@ -79,11 +77,12 @@ async function start()
 			//if (zombie.position.subtract(player.position).magnitude() < 1000)
 			//	zombie.seek(player)
 			//else 
-				zombie.wander(t);
-
-			zombie.seperate(zombies)
-			zombie.cohesion(zombies);
-			zombie.align(zombies);
+			
+			//zombie.behavior.wander();
+			zombie.behavior.seperate(zombies)
+			zombie.behavior.cohesion(zombies);
+			zombie.behavior.align(zombies);
+			//zombie.behavior.seek(player.position);
 
 			if (zombie.x < -10)
 				zombie.x = app.screen.width + 10;
