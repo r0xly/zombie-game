@@ -1,15 +1,17 @@
 import 'pixi.js/math-extras';
-import { AlphaFilter, Application, Assets,  EventEmitter,  mapType,  Point,  Rectangle, Sprite, Texture } from 'pixi.js';
+import { AlphaFilter, Application, Assets,  Container,  EventEmitter,  mapType,  Point,  Rectangle, Sprite, Texture } from 'pixi.js';
 import { Player } from './objects/player';
 import { PlayerController } from './controllers/player-contoller';
 import { Blaster } from './objects/blaster';
 import { InputController } from './controllers/input-controller';
 import { Projectile } from './objects/projectile';
-import { Zombie } from './objects/entities/zombies/zombie';
+import { Zombie } from './controllers/entities/zombies/zombie';
 import { projectileContainer, updateProjectiles } from './controllers/projectile-controller';
-import { addZombie, updateZombies, zombieContainer, zombies } from './objects/entities/zombies/zombie-controller';
+import { addZombie, updateZombies, zombieContainer, zombies } from './controllers/entities/zombies/zombie-controller';
+import { Camera, PanTo, Shake, ZoomTo } from 'pixi-game-camera';
 
 const app = new Application();
+
 
 async function setup() 
 {
@@ -48,7 +50,6 @@ async function start()
 	const inputController = new InputController(app);
 
 	const player = new Player();
-	player.x = app.screen.width / 2;
 	player.y = app.screen.height / 2;
 
 	const playerController = new PlayerController(player, inputController);
@@ -58,12 +59,12 @@ async function start()
 		texture: Assets.get("blaster"),
 		anchorPoint: new Point(0.6, 0.6),
 		offset: new Point(-10, 0),
-		projectileSpeed: 60,
-		fireRate: 100,
+		projectileSpeed: 60 * 2,
+		fireRate: 100 * 0.5,
 	});
 
 	player.equipWeapon(blaster);
-
+	
 
 	app.ticker.add(ticker => 
 	{
@@ -73,17 +74,20 @@ async function start()
 
 		zombies.forEach(zombie => 
 		{
-			//zombie.seek(player.x, player.y)
-			//if (zombie.position.subtract(player.position).magnitude() < 1000)
-			//	zombie.seek(player)
-			//else 
+			if (zombie.position.subtract(player.position).magnitude() < 500)
+			{
+				zombie.behavior.seek(player.position);
+				zombie.behavior.seperate(zombies)
+				return;
+			}
+
 			
-			//zombie.behavior.wander();
-			zombie.behavior.seperate(zombies)
+			zombie.behavior.wander();
 			zombie.behavior.cohesion(zombies);
 			zombie.behavior.align(zombies);
 			//zombie.behavior.seek(player.position);
 
+			/*
 			if (zombie.x < -10)
 				zombie.x = app.screen.width + 10;
 			if (zombie.x > app.screen.width + 10)
@@ -92,7 +96,7 @@ async function start()
 				zombie.y = app.screen.height + 10
 			if (zombie.y > app.screen.height + 10)
 				zombie.y = 10
-
+			*/
 		});
 	});
 
@@ -102,7 +106,6 @@ async function start()
 		zombie.x = Math.random() * app.screen.width;
 		zombie.y = Math.random() * app.screen.height;
 		addZombie(zombie);
-		zombie.zIndex = Math.round(Math.random()) - 1;
 
 	}
 
@@ -110,9 +113,15 @@ async function start()
 	projectileContainer.zIndex = 100;
 
 	app.stage.addChild(player, projectileContainer, zombieContainer);
+	const camera = new Camera(app.ticker);
+
+
+	window.addEventListener("keydown", event =>
+	{
+		if (event.key === "e")
+			camera.effect(new Shake(app.stage, 20, 50));
+	})
+
 }
 
-
 start();
-
-

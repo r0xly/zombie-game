@@ -51,6 +51,7 @@ export class Blaster extends Sprite
         const projectile = new Projectile();
         projectile.position = this.getGlobalPosition();
         projectile.texture = Assets.get("projectile");
+        projectile.tint = "#001529";
         projectile.velocity.x = velcoity.x;
         projectile.velocity.y = velcoity.y;
 

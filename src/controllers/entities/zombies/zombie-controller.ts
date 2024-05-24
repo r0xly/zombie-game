@@ -5,7 +5,6 @@ import { limitPoint } from "../../../util/point-util";
 export const zombieContainer = new Container();
 export const zombies: Zombie[] = [];
 
-
 export function addZombie(zombie: Zombie)
 {
     zombieContainer.addChild(zombie);
@@ -24,8 +23,14 @@ export function updateZombies(ticker: Ticker)
             continue;
         }
 
-        zombie.velocity = limitPoint(zombie.velocity.add(zombie.acceleration.multiplyScalar(ticker.deltaTime)), zombie.maxSpeed);
-        zombie.position = zombie.position.add(zombie.velocity.multiplyScalar(ticker.deltaTime));
-        zombie.acceleration = new Point();
+        zombie.velocity.x += ticker.deltaTime * zombie.acceleration.x;
+        zombie.velocity.y += ticker.deltaTime * zombie.acceleration.y;
+        zombie.velocity = limitPoint(zombie.velocity, zombie.maxSpeed);
+
+        zombie.position.x += ticker.deltaTime * zombie.velocity.x;
+        zombie.position.y += ticker.deltaTime * zombie.velocity.y;
+
+        zombie.acceleration.x = 0;
+        zombie.acceleration.y = 0;
     }
 }

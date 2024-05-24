@@ -1,6 +1,6 @@
 import { Container, Ticker } from "pixi.js";
 import { Projectile } from "../objects/projectile";
-import { zombies } from "../objects/entities/zombies/zombie-controller";
+import { zombies } from "./entities/zombies/zombie-controller";
 
 const projectiles: Projectile[] = [];
 
@@ -26,11 +26,12 @@ export function updateProjectiles(ticker: Ticker)
         const projectile = projectiles[i];
         
 
-        projectile.time += ticker.deltaTime;
-        projectile.x -= ticker.deltaTime * projectile.velocity.x;
-        projectile.y -= ticker.deltaTime * projectile.velocity.y;
+        
         projectile.velocity.x += ticker.deltaTime * projectile.acceleration.x;
         projectile.velocity.y += ticker.deltaTime * projectile.acceleration.y;
+        projectile.x -= ticker.deltaTime * projectile.velocity.x;
+        projectile.y -= ticker.deltaTime * projectile.velocity.y;
+        projectile.time += ticker.deltaTime;
 
         for (const zombie of zombies)
         {
