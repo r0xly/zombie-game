@@ -1,7 +1,5 @@
 import { Point, Sprite, Ticker } from "pixi.js";
-import { limitPoint } from "../../../util/point-util";
-import { noise } from "../../../util/noise";
-import { Player } from "../../../objects/player";
+import { limitPoint } from "../../util/point";
 import { ZombieBehavior } from "./zombie-behavior";
 
 

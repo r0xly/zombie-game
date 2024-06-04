@@ -1,12 +1,12 @@
 import { Assets, curveEps, Point, Sprite, Texture } from "pixi.js"
-import { addProjectile } from "../controllers/projectile-controller";
 import { Projectile } from "./projectile";
+import { ProjectileController } from "../controllers/projectile-controller";
 
-interface BlasterOptions
+export interface BlasterOptions
 {
     projectileSpeed: number,
     anchorPoint: Point,
-    texture: Texture,
+    texture: string,
     fireRate: number,
     offset: Point,
     
@@ -16,9 +16,9 @@ export class Blaster extends Sprite
 {
     nextFireTick = 0;
 
-    constructor(public data: BlasterOptions)
+    constructor(public data: BlasterOptions, private projectileController: ProjectileController)
     {
-        super(data.texture);
+        super(Assets.get(data.texture));
 
         this.anchor = data.anchorPoint;
         this.position = data.offset;
@@ -49,12 +49,12 @@ export class Blaster extends Sprite
             .multiplyScalar(this.data.projectileSpeed);
 
         const projectile = new Projectile();
-        projectile.position = this.getGlobalPosition();
+        projectile.position = this.parent.position;
         projectile.texture = Assets.get("projectile");
         projectile.tint = "#001529";
         projectile.velocity.x = velcoity.x;
         projectile.velocity.y = velcoity.y;
 
-        addProjectile(projectile);
+        this.projectileController.addProjectile(projectile);
     }
 }

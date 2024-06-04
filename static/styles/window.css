@@ -1,0 +1,10 @@
+.window 
+{
+    position: absolute;
+    background-color: rgba(0, 0, 0, 0.5);
+    overflow: auto;
+    display: none;
+    resize: both;
+    margin: 100px;
+    color: white;
+}

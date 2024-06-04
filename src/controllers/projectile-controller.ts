@@ -1,60 +1,41 @@
 import { Container, Ticker } from "pixi.js";
+import { Game } from "../game";
 import { Projectile } from "../objects/projectile";
-import { zombies } from "./entities/zombies/zombie-controller";
 
-const projectiles: Projectile[] = [];
-
-export const projectileContainer = new Container();
-
-function collides(objectA, objectB)
+export class ProjectileController 
 {
-    const bounds1 = objectA.getBounds();
-    const bounds2 = objectB.getBounds();
+    projectileContainer = new Container();
+    projectiles: Projectile[] = [];
 
-    return (
-        bounds1.x < bounds2.x + bounds2.width
-        && bounds1.x + bounds1.width > bounds2.x
-        && bounds1.y < bounds2.y + bounds2.height
-        && bounds1.y + bounds1.height > bounds2.y
-    );
-}
-
-export function updateProjectiles(ticker: Ticker)
-{
-    for (let i = 0; i < projectiles.length; i++) 
+    constructor(game: Game)
     {
-        const projectile = projectiles[i];
-        
+        game.pixi.ticker.add(ticker => this.update(ticker));
+        game.workspace.addChild(this.projectileContainer);
+    }
 
-        
-        projectile.velocity.x += ticker.deltaTime * projectile.acceleration.x;
-        projectile.velocity.y += ticker.deltaTime * projectile.acceleration.y;
-        projectile.x -= ticker.deltaTime * projectile.velocity.x;
-        projectile.y -= ticker.deltaTime * projectile.velocity.y;
-        projectile.time += ticker.deltaTime;
+    addProjectile(projectile: Projectile)
+    {
+        this.projectileContainer.addChild(projectile);
+        this.projectiles.push(projectile);
+    }
 
-        for (const zombie of zombies)
+    private update(ticker: Ticker)
+    {
+        for (let i = 0; i < this.projectiles.length; i++)
         {
-            if (!zombie.destroyed && projectile && collides(zombie, projectile))
+            const projectile = this.projectiles[i];
+
+            projectile.velocity.x += ticker.deltaTime * projectile.accelerations.x;
+            projectile.velocity.y += ticker.deltaTime * projectile.accelerations.y;
+            projectile.position.x += ticker.deltaTime * -projectile.velocity.x;
+            projectile.position.y += ticker.deltaTime * -projectile.velocity.y;
+            projectile.elapsedTime += ticker.deltaTime;
+
+            if (projectile.lifeTime > projectile.lifeTime)
             {
-                projectiles.splice(i, 1);
+                this.projectiles.splice(i, 1);
                 projectile.destroy();
-                zombie.destroy();
-                break;
             }
         }
-        
-
-        if (!projectile.destroyed && projectile.time > projectile.lifeTime) 
-        {
-            projectiles.splice(i, 1);
-            projectile.destroy();
-        }
     }
-}
-
-export function addProjectile(projectile: Projectile)
-{
-    projectileContainer.addChild(projectile);
-    projectiles.push(projectile);
 }

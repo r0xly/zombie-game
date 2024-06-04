@@ -1,4 +1,4 @@
-import { Application } from "pixi.js";
+import { Game } from "../game";
 
 export class InputController
 {
@@ -13,8 +13,10 @@ export class InputController
         down: false 
     }
 
-    constructor(app: Application)
+    constructor(game: Game)
     {
+        const app = game.pixi;
+
         app.stage.addEventListener("pointermove", ({ globalX, globalY }) => 
         {
             this.pointer.x = globalX;
@@ -36,13 +38,13 @@ export class InputController
             this.keysDown.delete(key);
 
             if (key === "w")
-                this.verticalAxis = this.keysDown.has("s") ? -1 : 0;
+                this.verticalAxis = this.keysDown.has("s") ? 1 : 0;
             else if (key === "d")
                 this.horizontalAxis = this.keysDown.has("a") ? -1 : 0;
             else if (key === "a")
                 this.horizontalAxis = this.keysDown.has("d") ? 1 : 0;
             else if (key === "s")
-                this.verticalAxis = this.keysDown.has("w") ? 1 : 0;
+                this.verticalAxis = this.keysDown.has("w") ? -1 : 0;
         });
 
         window.addEventListener("contextmenu", (event) => 
@@ -55,9 +57,9 @@ export class InputController
             this.keysDown.add(key);
 
             if (key === "w")
-                this.verticalAxis = 1;
-            else if (key === "s")
                 this.verticalAxis = -1;
+            else if (key === "s")
+                this.verticalAxis = 1;
             else if (key === "a")
                 this.horizontalAxis = -1;
             else if (key === "d")

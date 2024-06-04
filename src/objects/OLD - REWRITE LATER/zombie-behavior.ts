@@ -1,7 +1,7 @@
 import { Point } from "pixi.js";
-import { noise } from "../../../util/noise";
-import { limitPoint } from "../../../util/point-util";
 import { Zombie } from "./zombie";
+import { noise } from "../../util/noise";
+import { limitPoint } from "../../util/point";
 
 const SEPERATION_DISTANCE = 150;
 const SEPERATION_DISTANCE_SQAURED = SEPERATION_DISTANCE ** 2;
