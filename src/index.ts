@@ -5,7 +5,7 @@ import { GameAssets } from './data/assets';
 
 const app = new Application();
 
-const global= (window as any);
+const global = (window as any);	
 
 async function setup() 
 {
@@ -28,6 +28,7 @@ async function preload()
 	await setup();
 
 	const game = new Game(app);
+	game.windowController.inventory.show();
 
-	global.setPlayerHealth = (health) => game.playerController.player.health = health;
+	global.game = game;
 })();

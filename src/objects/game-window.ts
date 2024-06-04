@@ -10,7 +10,7 @@ export class GameWindow
 
     show()
     {
-        this.windowElement.style.display = "block";
+        this.windowElement.style.display = "flex";
     }
 
     hide()

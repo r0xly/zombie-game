@@ -1,11 +1,9 @@
 import { Point, Sprite, Ticker } from "pixi.js";
-import { limitPoint } from "../../util/point";
+import { limitPoint, randomUnitPoint } from "../../util/point";
 import { ZombieBehavior } from "./zombie-behavior";
-
 
 export class Zombie extends Sprite
 {
-    
     maxSpeed = 6.0;
     maxforce = 0.3;
 
@@ -21,10 +19,8 @@ export class Zombie extends Sprite
 
         const theta = Math.random() * 2 * Math.PI;
 
-        this.velocity = new Point(
-            Math.cos(theta) * this.maxSpeed,
-            Math.sin(theta) * this.maxSpeed
-        )
+        this.velocity = randomUnitPoint()
+            .multiplyScalar(this.maxSpeed);
     }
 
 
