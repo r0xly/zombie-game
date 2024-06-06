@@ -3,9 +3,10 @@ export class GameWindow
     constructor(private windowElement: HTMLElement)
     {
         const closeButton = windowElement.querySelector("#close");
+        const header = windowElement.querySelector("#window-header");
 
-        if (closeButton)
-            closeButton.addEventListener("onclick", () => this.hide());
+        if (closeButton) closeButton.addEventListener("onclick", () => this.hide());
+        if (header) dragElement(windowElement);
     }
 
     show()
@@ -16,5 +17,40 @@ export class GameWindow
     hide()
     {
         this.windowElement.style.display = "none";
+    }
+}
+
+function dragElement(elmnt: HTMLElement) 
+{
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+
+    document.getElementById("window-header").onmousedown = dragMouseDown;
+
+    function dragMouseDown(e) 
+    {
+        e = e || window.event;
+        e.preventDefault();
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        document.onmouseup = closeDragElement;
+        document.onmousemove = elementDrag;
+    }
+
+    function elementDrag(e) 
+    {
+        e = e || window.event;
+        e.preventDefault();
+        pos1 = pos3 - e.clientX;
+        pos2 = pos4 - e.clientY;
+        pos3 = e.clientX;
+        pos4 = e.clientY;
+        elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+        elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+    }
+
+    function closeDragElement() 
+    {
+        document.onmouseup = null;
+        document.onmousemove = null;
     }
 }
