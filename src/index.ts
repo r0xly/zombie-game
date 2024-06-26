@@ -28,7 +28,7 @@ async function preload()
 	await setup();
 
 	const game = new Game(app);
-	game.windowController.inventory.show();
+	game.windowController.playerInventory.show();
 
 	global.game = game;
 })();

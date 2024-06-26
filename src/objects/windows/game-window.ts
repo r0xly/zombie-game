@@ -1,12 +1,19 @@
-export class GameWindow
+import { EventEmitter } from "pixi.js";
+
+export class GameWindow extends EventEmitter
 {
     constructor(private windowElement: HTMLElement)
     {
-        const closeButton = windowElement.querySelector("#close");
+        super();
+        const closeButton = windowElement.querySelector("#window-close");
+        console.log(closeButton);
         const header = windowElement.querySelector("#window-header");
 
-        if (closeButton) closeButton.addEventListener("onclick", () => this.hide());
-        if (header) dragElement(windowElement);
+        if (closeButton) 
+            closeButton.addEventListener("click", () => this.hide());
+
+        if (header) 
+            dragElement(windowElement);
     }
 
     show()

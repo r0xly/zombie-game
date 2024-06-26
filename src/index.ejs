@@ -10,15 +10,27 @@
 <body>
     <div id="inventory" class="window" style="width: 400px">
         <div class="window-header" id="window-header">
-            <h6>Inventory</h6> 
-            <br>
-            <button>Guns</button>
-            <button>Guns</button>
-            <button>Guns</button>
+
+            <div class="flex-space-between">
+                <h6>Inventory</h6> 
+                <button class="window-close" id="window-close">+</button>
+            </div>
+
         </div>
 
         <div class="window-content">
-            content
+            <div class="inventory-header flex-space-between" style="color: rgba(255, 255, 255, 0.574);">
+                <p>Name</p>
+                <div style="display: flex; gap: 20px">
+                    <p>Class</p>
+                    <p>WGT</p>
+                    <p>VAL</p>
+                </div>
+            </div> 
+
+            <div id="inventory-items">
+
+            </div>
         </div>
 
         <div class="window-footer">

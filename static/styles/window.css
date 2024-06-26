@@ -1,7 +1,7 @@
 .window 
 {
     position: absolute;
-    display: flex;
+    display: none;
     flex-flow: column;
     position: absolute;
     overflow: auto;
@@ -15,7 +15,7 @@
 {
     background-color: rgba(0, 0, 0, 0.92);
     width: 100%;
-    padding: 15px;
+    padding: 20px;
     border-radius: 5px 5px 0px 0px;
     box-sizing: border-box;
     position: relative;
@@ -26,7 +26,7 @@
 {
     background-color: rgba(0, 0, 0, 0.92);
     width: 100%;
-    padding: 15px;
+    padding: 20px;
     border-radius: 0px 0px 5px 5px;
     box-sizing: border-box;
     position: relative;
@@ -64,4 +64,25 @@
     box-sizing: border-box;
     flex: 1;
     padding: 5px;
+}
+
+.window-close
+{
+    background: none;
+    outline: none;
+    position: relative;
+    font-weight: bold;
+    font-size: 25px;
+    bottom: 2px;
+    font-family: monospace;
+    border: none;
+    color: white; 
+    transform: rotate(45deg);
+}
+
+.inventory-header
+{
+    padding: 10px 10px 0px 10px;
+    box-sizing: border-box;
+    text-transform: uppercase;
 }

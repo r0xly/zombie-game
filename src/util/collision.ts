@@ -1,4 +1,4 @@
-import { Container, Point } from "pixi.js";
+import { Container, Graphics, Point } from "pixi.js";
 
 export function boxCollides(object1: Container, object2: Container)
 {
@@ -25,3 +25,6 @@ export function pointCollides(x: number, y: number, object: Container)
         y < bounds.maxY
     )
 }
+
+const graphics = new Graphics();
+graphics
