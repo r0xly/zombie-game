@@ -1,0 +1,45 @@
+*
+{
+    margin: 0;
+    padding: 0;
+    font-family: monospace;
+    font-size: 1rem;
+}
+
+h1
+{
+    font-size: 2.986rem;
+}
+
+h2 
+{
+    font-size: 2.488rem;
+}
+
+h3
+{
+    font-size: 2.074;
+}
+
+h4
+{
+    font: 1.728;
+}
+
+h5
+{
+    font-size: 1.44rem;
+}
+
+h6
+{
+    font-weight: normal;
+    font-size: 1.3rem;
+}
+
+.flex-space-between 
+{
+    display: flex;
+    justify-content: space-between;
+    text-align: left;
+}

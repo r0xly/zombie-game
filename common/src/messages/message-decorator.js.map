@@ -1,0 +1,1 @@
+{"version":3,"file":"message-decorator.js","sourceRoot":"","sources":["message-decorator.ts"],"names":[],"mappings":";;;AAEa,QAAA,eAAe,GAAwB,EAAE,CAAC;AAEhD,MAAM,OAAO,GAAG,CAAC,IAAiB,EAAE,EAAE;IAEzC,OAAO,CAAC,WAAqB,EAAE,EAAE;QAE7B,uBAAe,CAAC,IAAI,CAAC,GAAG,WAAW,CAAC;IACxC,CAAC,CAAA;AACL,CAAC,CAAA;AANY,QAAA,OAAO,WAMnB"}

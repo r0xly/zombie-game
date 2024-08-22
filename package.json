@@ -1,0 +1,13 @@
+{
+  "name": "zombie-game",
+  "version": "0.0.1",
+  "description": "",
+  "scripts": {
+    "dev:client": "cd client && pnpm start",
+    "dev:server": "cd server && pnpm dev"
+  },
+  "keywords": [],
+  "author": {
+    "name": "Omar"
+  }
+}

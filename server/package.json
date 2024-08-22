@@ -1,0 +1,17 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "node -r ts-node/register --watch --watch-path=./src --watch-path=../common src/index.ts",
+    "start": "node dist/server/src/index.js",
+    "build": "tsc"
+  },
+  "dependencies": {
+    "@types/events": "^3.0.3",
+    "events": "^3.3.0",
+    "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.47.0"
+  },
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "typescript": "^5.5.4"
+  }
+}
