@@ -1,33 +1,24 @@
 import EventEmitter from "events";
-import { messageRegistry } from "../../../common/src/messages/message-decorator";
-import { ChatMessage } from "../../../common/src/messages/message-objects";
+import { WebSocket } from "uWebSockets.js";
 import { MessageType } from "../../../common/src/messages/message-type";
+import { SendChatMesage } from "../../../common/src/messages/message-objects";
+import { parseMessage } from "../../../common/src/messages/message-parser";
+import { UserData } from "../types/user";
+
+const textDecoder = new TextDecoder();
 
 export declare interface MessageController
 {
     on(event: string, listener: Function): this;
-    on(event: MessageType.ChatMesage, listener: (message: ChatMessage) => void): this,
+    on(event: MessageType.SendChatMesage, listener: (sender: WebSocket<UserData>, message: SendChatMesage) => void): this,
 }
 
 export class MessageController extends EventEmitter
 {
-    async handleMessage(jsonString: string) 
+    async handleMessage(sender: WebSocket<UserData>, message: ArrayBuffer) 
     {
-        const jsonObject = JSON.parse(jsonString);
-        const MessageTypeClass = messageRegistry[jsonObject.type];
-
-        if (!MessageTypeClass)
-            throw new Error(`Unknown message type: ${jsonObject.type}`);
-
-        // Validate Object Properties 
-        const requiredProperties = Object.keys(new MessageTypeClass());
-        const missingProperties = requiredProperties.filter(prop => !(prop in jsonObject));
-
-        if (missingProperties.length > 0) 
-            throw new Error(`Missing required properties: ${missingProperties.join(', ')}`);
-
-        const messageObject = Object.assign(new MessageTypeClass(), jsonObject);
-
-        this.emit(jsonObject.type, messageObject);
+        const [ messageType, messageObject ] = parseMessage(textDecoder.decode(message)); 
+        
+        this.emit(messageType, sender, messageObject);
     }
 }

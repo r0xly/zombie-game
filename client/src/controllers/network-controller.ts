@@ -8,6 +8,4 @@ export class NetworkControler
     {
         this.websocket = new WebSocket(`${url}?display-name=${displayName}`);
     }
-
-    
 }

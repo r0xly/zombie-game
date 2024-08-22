@@ -30,9 +30,14 @@ export class Server
 
     private async onMessage(ws: WebSocket<UserData>, msg: ArrayBuffer) 
     {
-        const decoder = new TextDecoder();
-
-        this.messageController.handleMessage(decoder.decode(msg));
+        try 
+        {
+            this.messageController.handleMessage(ws, msg);
+        }
+        catch
+        {
+            console.log("Failed to parse message");
+        }
     }
 
     private async onOpen(ws: WebSocket<UserData>)

@@ -1,4 +1,6 @@
 export const enum MessageType
 {
-    ChatMesage,
+    SendChatMesage,
+    UserChatMesssage,
+    ServerChatMessage,
 }

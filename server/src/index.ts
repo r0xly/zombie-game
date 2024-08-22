@@ -4,6 +4,11 @@ import { MessageType } from "../../common/src/messages/message-type";
 
 const app = App();
 
-new Server(app, 9001).messageController.on(MessageType.ChatMesage, chatMessage => {
-    console.log(chatMessage.content);
+const server = new Server(app, 9001)
+
+server.messageController.on(MessageType.SendChatMesage, (sender, message) => 
+{
+    const userData = sender.getUserData();
+
+    console.log(`${userData.displayName} (${userData.userId}): ${message.content}`);
 });
