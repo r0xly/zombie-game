@@ -15,7 +15,6 @@ export class Server
             upgrade: (res, req, ctx) => this.handleUpgrade(res, req, ctx),
             message: (ws, msg) => this.onMessage(ws, msg),
             open: (ws) => this.onOpen(ws),
-
         });
 
         app.listen(port, (token: any) =>
@@ -34,7 +33,7 @@ export class Server
         {
             this.messageController.handleMessage(ws, msg);
         }
-        catch
+        catch(err: any)
         {
             console.log("Failed to parse message");
         }

@@ -8,7 +8,7 @@ export class SendChatMesage
 }
 
 @Message(MessageType.UserChatMesssage)
-export class UserSendMessage
+export class UserChatMessage
 {
     constructor(public userId: string, public content: string) { }
 }
