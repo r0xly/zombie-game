@@ -3,10 +3,12 @@ import { MessageController } from "./controllers/message-controller";
 import { UserData } from "./util/user";
 import { generateGuestUserData } from "./util/user";
 import { PlayerController } from "./controllers/player-controller";
+import { HumanoidController } from "./controllers/humanoid-controller";
 
 export class Server 
 {
     messageController = new MessageController(this);
+    humanoidController = new HumanoidController(this);
     playerController = new PlayerController(this);
 
     constructor(public app: TemplatedApp, port: number)

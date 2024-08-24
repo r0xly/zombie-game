@@ -8,8 +8,7 @@ export interface UserData
 }
 
 /**
- * Generates a temporary UserData object for unauthenticated players.
- * 
+ * Generates a temporary UserData object for an unauthenticated Player.
  * @param displayName
  */
 export function generateGuestUserData(displayName: string)

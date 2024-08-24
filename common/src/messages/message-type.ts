@@ -1,10 +1,10 @@
 export const enum MessageType
 {
+    SyncPlayerHumanoids,
+    UpdatePlayerHumanoid,
     SendChatMesage,
     UserChatMesssage,
     ServerChatMessage,
-    MovePlayer,
     PlayerJoined,
-    PlayerMoved,
     PlayerLeft,
 }

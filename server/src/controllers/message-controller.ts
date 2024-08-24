@@ -1,20 +1,21 @@
 import "../../../common/src/messages/message-objects";
-import { MovePlayer, SendChatMesage } from "../../../common/src/messages/message-objects";
+import { SendChatMesage, UpdatePlayerHumanoid } from "../../../common/src/messages/message-objects";
 import EventEmitter from "events";
 import { RecognizedString, WebSocket } from "uWebSockets.js";
 import { MessageType } from "../../../common/src/messages/message-type";
 import { parseMessage, stringifyMessage } from "../../../common/src/messages/message-parser";
 import { UserData } from "../util/user";
 import { Server } from "../server";
+import { Player } from "./player-controller";
 
 const textDecoder = new TextDecoder();
 
 // Defines the differnt event types for intellisense.
 export declare interface MessageController
 {
+    on(event: MessageType.UpdatePlayerHumanoid, listener: (sender: Player, message: UpdatePlayerHumanoid) => void): this
+    on(event: MessageType.SendChatMesage, listener: (sender: Player, message: SendChatMesage) => void): this,
     on(event: string, listener: Function): this;
-    on(event: MessageType.SendChatMesage, listener: (sender: WebSocket<UserData>, message: SendChatMesage) => void): this,
-    on(event: MessageType.MovePlayer, listener: (sender: WebSocket<UserData>, message: MovePlayer) => void): this,
 }
 
 export class MessageController extends EventEmitter
@@ -28,9 +29,13 @@ export class MessageController extends EventEmitter
     {
         try 
         {
+            const player = this.server.playerController.getPlayerFromUserId(sender.getUserData().userId);
             const [messageType, messageObject] = parseMessage(textDecoder.decode(messageBuffer)); 
 
-            this.emit(messageType, sender, messageObject);
+            if (!player)
+                return;
+
+            this.emit(messageType, player, messageObject);
         }
         catch(err)
         {
@@ -39,13 +44,13 @@ export class MessageController extends EventEmitter
         
     }
 
-    sendMessage(websocket: WebSocket<UserData>, message: object)
+    sendMessage(player: Player, message: object)
     {
-        websocket.send(stringifyMessage(message));
+        player.websocket.send(stringifyMessage(message));
     }
 
-    broadcastMessage(message: object)
+    broadcastMessage(message: object, filter?: Player)
     {
-        this.server.playerController.getPlayers().forEach(player => this.sendMessage(player.websocket, message))
+        this.server.playerController.getPlayers().forEach(player => { if (player !== filter) this.sendMessage(player, message) });
     }
 }

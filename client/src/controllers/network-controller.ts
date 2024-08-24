@@ -1,7 +1,7 @@
 import { Game } from "../game";
-import { PlayerJoined, SendChatMesage } from "../../../common/src/messages/message-objects";
+import { PlayerJoined, SendChatMesage, SyncPlayerHumanoids } from "../../../common/src/messages/message-objects";
 import { Humanoid } from "../objects/humanoid";
-import { parseMessage } from "../../../common/src/messages/message-parser";
+import { parseMessage, stringifyMessage } from "../../../common/src/messages/message-parser";
 import { MessageType } from "../../../common/src/messages/message-type";
 
 interface Player
@@ -22,7 +22,7 @@ export class NetworkControler
 
         this.websocket.onopen = () => 
         {
-            this.sendMessage(new SendChatMesage("Hello, world!"));
+            // ...
         }
 
         this.websocket.onmessage = (msg) =>
@@ -43,17 +43,20 @@ export class NetworkControler
                 });
             }
 
-            if (messageType === MessageType.PlayerMoved)
+            if (messageType === MessageType.SyncPlayerHumanoids)
             {
-                messageObject = messageObject as PlayerJoined;
-                
-                const p = this.players.get(messageObject.userId);
+                let message = messageObject as SyncPlayerHumanoids;
 
-                if (p)
+                for (const userId in message.players)
                 {
+                    const humanoidData = message.players[userId];
+                    const player = this.players.get(userId);
+                    
+                    if (!player) 
+                        continue;
 
-                    p.humanoid.position.x = messageObject.x;
-                    p.humanoid.position.y = messageObject.y;
+                    player.humanoid.x = humanoidData.x;
+                    player.humanoid.y = humanoidData.y;
                 }
             }
         }
@@ -61,9 +64,6 @@ export class NetworkControler
 
     sendMessage(message: object)
     {
-        message["type"] = Object.getPrototypeOf(message).type
-        const msg = JSON.stringify(message);
-
-        this.websocket.send(msg);
+        this.websocket.send(stringifyMessage(message));
     }
 }

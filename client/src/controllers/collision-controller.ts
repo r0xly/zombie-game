@@ -24,10 +24,8 @@ export class CollisionController
         const nearbyContainers = this.collisonTree.query(new BoundingBox(x, y, 1, 1));
 
         for (const container of nearbyContainers)
-        {
             if (pointCollides(x, y, container))
                 return true;
-        }
 
         return false;
     }
