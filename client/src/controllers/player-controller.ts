@@ -3,6 +3,7 @@ import { Game } from "../game";
 import { Humanoid, HumanoidState } from "../objects/humanoid";
 import { Blaster } from "../objects/blaster";
 import { BlasterData } from "../data/blaster-data";
+import { MovePlayer } from "../../../common/src/messages/message-objects";
 
 const PLAYER_SPEED = 8;
 
@@ -51,6 +52,14 @@ export class PlayerController
         if (!player || this.player.state === HumanoidState.dead)
             return;
 
+        try
+        {
+            this.game.networkController.sendMessage(new MovePlayer(player.x, player.y));
+        }
+        catch
+        {
+            
+        }
         const collisionController = this.game.collisionController;
         const deltaTime = ticker.deltaTime;
 

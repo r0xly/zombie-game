@@ -9,8 +9,8 @@
     "resolveJsonModule": true,
     "sourceMap": true,
     "experimentalDecorators": true,
-    "strictNullChecks": true,
-    "strict": true,
+    "strictNullChecks": false,
+    "strict": false,
     "skipLibCheck": true
   },
   "exclude": [

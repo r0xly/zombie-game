@@ -1,16 +1,15 @@
 import { App } from "uWebSockets.js";
 import { Server } from "./server";
-import { MessageType } from "../../common/src/messages/message-type";
-import { UserChatMessage } from "../../common/src/messages/message-objects";
 
 const app = App();
+const server = new Server(app, 9001);
 
-const server = new Server(app, 9001)
-
-server.messageController.on(MessageType.SendChatMesage, (sender, message) => 
+server.playerController.on("PlayerJoined", player =>
 {
-    const userData = sender.getUserData();
-
-    console.log(`${userData.displayName} (${userData.userId}): ${message.content}`);
-    server.messageController.sendMessage(sender, new UserChatMessage(userData.displayName, message.content));
+    console.log(`${player.userData.displayName} (${player.userData.userId}) joined the game.`);
+});
+        
+server.playerController.on("PlayerLeft", player =>
+{
+    console.log(`${player.userData.displayName} (${player.userData.userId}) left the game.`);
 });

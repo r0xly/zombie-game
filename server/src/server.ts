@@ -1,20 +1,22 @@
 import { HttpRequest, HttpResponse, TemplatedApp, us_socket_context_t, WebSocket } from "uWebSockets.js";
-import { UserController } from "./controllers/user-controller";
-import { UserData } from "./types/user";
 import { MessageController } from "./controllers/message-controller";
+import { UserData } from "./util/user";
+import { generateGuestUserData } from "./util/user";
+import { PlayerController } from "./controllers/player-controller";
 
 export class Server 
 {
-    userController = new UserController();
-    messageController = new MessageController();
+    messageController = new MessageController(this);
+    playerController = new PlayerController(this);
 
     constructor(public app: TemplatedApp, port: number)
     {
         app.ws<UserData>("/*",
         {
             upgrade: (res, req, ctx) => this.handleUpgrade(res, req, ctx),
-            message: (ws, msg) => this.onMessage(ws, msg),
-            open: (ws) => this.onOpen(ws),
+            message: (ws, msg) => this.messageController.handleMessage(ws, msg),
+            close: (ws) => this.playerController.unregisterPlayer(ws),
+            open: (ws) => this.playerController.registerPlayer(ws),
         });
 
         app.listen(port, (token: any) =>
@@ -27,26 +29,7 @@ export class Server
 
     }
 
-    private async onMessage(ws: WebSocket<UserData>, msg: ArrayBuffer) 
-    {
-        try 
-        {
-            this.messageController.handleMessage(ws, msg);
-        }
-        catch(err: any)
-        {
-            console.log("Failed to parse message");
-        }
-    }
-
-    private async onOpen(ws: WebSocket<UserData>)
-    {
-        const userData = ws.getUserData();
-
-        console.log(`${userData.displayName} (${userData.userId}) connected to the server.`);
-    }
-
-    private async handleUpgrade(res: HttpResponse, req: HttpRequest, ctx: us_socket_context_t) 
+    private handleUpgrade(res: HttpResponse, req: HttpRequest, ctx: us_socket_context_t) 
     {
         const secWebSocketExtensions = req.getHeader("sec-websocket-extensions");
         const secWebSocketProtocol = req.getHeader("sec-websocket-protocol");
@@ -59,8 +42,8 @@ export class Server
 
         try 
         {
-            const userData = this.userController.createUser(displayName || "Undefined");
-
+            const userData = generateGuestUserData(displayName || "undefined")
+            
             if (upgradeAborted)
                 return;
 
