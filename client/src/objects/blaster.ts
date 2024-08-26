@@ -1,6 +1,6 @@
-import { Assets, curveEps, Point, Sprite, Texture } from "pixi.js"
-import { Projectile } from "./projectile";
 import { ProjectileController } from "../controllers/projectile-controller";
+import { Assets, Point, Sprite } from "pixi.js"
+import { Projectile } from "./projectile";
 
 export interface BlasterOptions
 {

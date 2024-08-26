@@ -1,6 +1,6 @@
+import { Projectile } from "../objects/projectile";
 import { Container, Ticker } from "pixi.js";
 import { Game } from "../game";
-import { Projectile } from "../objects/projectile";
 
 export class ProjectileController 
 {

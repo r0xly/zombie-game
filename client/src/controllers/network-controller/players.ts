@@ -1,9 +1,7 @@
-import { Container } from "pixi.js";
-import { NetworkController } from ".";
-import { messageRegistry } from "../../../../common/src/messages/message-decorator";
 import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids } from "../../../../common/src/messages/message-objects";
 import { MessageType } from "../../../../common/src/messages/message-type";
 import { Humanoid } from "../../objects/humanoid";
+import { NetworkController } from ".";
 
 export interface Player
 {
@@ -25,7 +23,6 @@ export class Players
 
     private onSyncPlayerHumanoids(message: SyncPlayerHumanoids)
     {
-        console.log(message);
         for (const userId in message.players)
         {
             const player = this.players[userId];
@@ -49,6 +46,7 @@ export class Players
             userId: message.userId,
             humanoid: humanoid,
         }
+
         this.networkController.game.workspace.addChild(humanoid);
     }
 

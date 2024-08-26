@@ -1,10 +1,9 @@
-import { Game } from "../../game";
-import { PlayerJoined, PlayerLeft, SendChatMesage, SyncPlayerHumanoids } from "../../../../common/src/messages/message-objects";
-import { Humanoid } from "../../objects/humanoid";
+import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids } from "../../../../common/src/messages/message-objects";
 import { parseMessage, stringifyMessage } from "../../../../common/src/messages/message-parser";
 import { MessageType } from "../../../../common/src/messages/message-type";
 import { EventEmitter } from "pixi.js";
 import { Players } from "./players";
+import { Game } from "../../game";
 
 
 export declare interface NetworkController
@@ -37,7 +36,7 @@ export class NetworkController extends EventEmitter
     sendMessage(message: object)
     {
         if (this.websocket.readyState !== WebSocket.OPEN)
-            console.warn(`Failed to send message ${message}. WebSocket is not open.`)
+            return console.warn(`Failed to send message ${message}. WebSocket is not open.`)
 
         try 
         {

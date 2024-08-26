@@ -1,7 +1,7 @@
+import { BoundingBox, QuadTree } from "../util/quadTree";
+import { pointCollides } from "../util/collision";
 import { Container, Point } from "pixi.js";
 import { Game } from "../game";
-import { pointCollides } from "../util/collision";
-import { BoundingBox, QuadTree } from "../util/quadTree";
 
 
 export class CollisionController 

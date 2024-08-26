@@ -1,4 +1,4 @@
-import { Assets, Color, Container, Point, Sprite } from "pixi.js";
+import { Assets, Container, Point, Sprite } from "pixi.js";
 
 type Tool = Container;
 
