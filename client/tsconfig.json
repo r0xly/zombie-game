@@ -12,6 +12,7 @@
         "resolveJsonModule": true,
         "allowSyntheticDefaultImports": true,
         "experimentalDecorators": true,
+        "strict": false
 
     },
     // Folder for your code

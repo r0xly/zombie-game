@@ -4,13 +4,14 @@ import { PlayerController } from "./controllers/player-controller";
 import { ProjectileController } from "./controllers/projectile-controller";
 import { CameraController } from "./controllers/camera-controller";
 import { CollisionController } from "./controllers/collision-controller";
-import { NetworkControler } from "./controllers/network-controller";
+import { NetworkController } from "./controllers/network-controller";
+
 
 export class Game
 {
     workspace = new Container();
     
-    networkController = new NetworkControler(this, "ws://127.0.0.1:9001", "username");
+    networkController = new NetworkController(this, "ws://127.0.0.1:9001", "username");
     projectileController = new ProjectileController(this);
     collisionController = new CollisionController(this);
     playerController = new PlayerController(this);

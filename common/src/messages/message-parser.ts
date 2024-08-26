@@ -1,4 +1,5 @@
 import { messageRegistry } from "./message-decorator";
+import { MessageType } from "./message-type";
 
 export const stringifyMessage = (message: object) =>
 {
@@ -7,7 +8,7 @@ export const stringifyMessage = (message: object) =>
     return JSON.stringify(message);
 }
 
-export const parseMessage = (jsonString: string) =>
+export const parseMessage = (jsonString: string): [string, object] =>
 {
     const jsonObject = JSON.parse(jsonString);
     const messageType = jsonObject.type;
