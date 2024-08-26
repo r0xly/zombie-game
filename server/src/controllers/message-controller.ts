@@ -1,12 +1,11 @@
-import "../../../common/src/messages/message-objects";
 import { SendChatMesage, UpdatePlayerHumanoid } from "../../../common/src/messages/message-objects";
-import EventEmitter from "events";
-import { RecognizedString, WebSocket } from "uWebSockets.js";
-import { MessageType } from "../../../common/src/messages/message-type";
 import { parseMessage, stringifyMessage } from "../../../common/src/messages/message-parser";
+import { MessageType } from "../../../common/src/messages/message-type";
+import { RecognizedString, WebSocket } from "uWebSockets.js";
+import { Player } from "./player-controller";
 import { UserData } from "../util/user";
 import { Server } from "../server";
-import { Player } from "./player-controller";
+import EventEmitter from "events";
 
 const textDecoder = new TextDecoder();
 

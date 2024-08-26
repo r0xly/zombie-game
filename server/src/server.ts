@@ -1,9 +1,9 @@
 import { HttpRequest, HttpResponse, TemplatedApp, us_socket_context_t, WebSocket } from "uWebSockets.js";
-import { MessageController } from "./controllers/message-controller";
-import { UserData } from "./util/user";
-import { generateGuestUserData } from "./util/user";
-import { PlayerController } from "./controllers/player-controller";
 import { HumanoidController } from "./controllers/humanoid-controller";
+import { MessageController } from "./controllers/message-controller";
+import { PlayerController } from "./controllers/player-controller";
+import { generateGuestUserData } from "./util/user";
+import { UserData } from "./util/user";
 
 export class Server 
 {
