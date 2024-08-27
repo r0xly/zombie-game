@@ -22,6 +22,13 @@ export class ServerChatMessage
     constructor(public content: string) { }
 }
 
+/** A Server to Client messaged sent when a Player for initally joins the game. It contains infomration such as the Player's assigned userId and world data. */
+@Message(MessageType.Welcome)
+export class WelcomeMessage
+{
+    constructor(public localPlayer: { userId: string, displayName: string }, public otherPlayers: { userId: string, displayName: string }[]) { }
+}
+
 /** A Server to Client message used to notify Players that a new Player has joined. */
 @Message(MessageType.PlayerJoined)
 export class PlayerJoined

@@ -1,4 +1,4 @@
-import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids } from "../../../../common/src/messages/message-objects";
+import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids, WelcomeMessage } from "../../../../common/src/messages/message-objects";
 import { parseMessage, stringifyMessage } from "../../../../common/src/messages/message-parser";
 import { MessageType } from "../../../../common/src/messages/message-type";
 import { EventEmitter } from "pixi.js";
@@ -11,6 +11,7 @@ export declare interface NetworkController
     on(event: MessageType.SyncPlayerHumanoids, listener: (message: SyncPlayerHumanoids) => void): this
     on(event: MessageType.PlayerJoined, listener: (message: PlayerJoined) => void): this
     on(event: MessageType.PlayerLeft, listener: (message: PlayerLeft) => void): this
+    on(event: MessageType.Welcome, listener: (message: WelcomeMessage) => void): this
     on(event: string, listener: Function): this;
 }
 

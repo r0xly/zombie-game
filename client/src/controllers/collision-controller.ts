@@ -20,7 +20,6 @@ export class CollisionController
 
     pointCollides(x: number, y: number)
     {
-
         const nearbyContainers = this.collisonTree.query(new BoundingBox(x, y, 1, 1));
 
         for (const container of nearbyContainers)

@@ -2,7 +2,7 @@ import { Server } from "../server";
 import { WebSocket } from "uWebSockets.js";
 import { UserData } from "../util/user";
 import EventEmitter from "events";
-import { PlayerJoined, PlayerLeft } from "../../../common/src/messages/message-objects";
+import { PlayerJoined, PlayerLeft, WelcomeMessage } from "../../../common/src/messages/message-objects";
 
 export interface Player
 {
@@ -42,11 +42,13 @@ export class PlayerController extends EventEmitter
             websocket: websocket,
             userData: userData,
         }
+    
+        const players = [];
+        this.getPlayers().forEach(player => players.push({ displayName: player.userData.displayName, userId: player.userData.userId }));
         
-        
-        this.server.messageController.broadcastMessage(new PlayerJoined(player.userData.userId, player.userData.displayName));
-        this.getPlayers().forEach(other => this.server.messageController.sendMessage(player, new PlayerJoined(other.userData.userId, other.userData.displayName)));
         this.emit("PlayerJoined", player);
+        this.server.messageController.broadcastMessage(new PlayerJoined(player.userData.userId, player.userData.displayName));
+        this.server.messageController.sendMessage(player, new WelcomeMessage( { displayName: player.userData.displayName, userId: player.userData.userId }, players ));
 
         this.players[userData.userId] = player;
     }
@@ -65,6 +67,8 @@ export class PlayerController extends EventEmitter
         delete this.players[websocket.getUserData().userId];
 
         this.server.messageController.broadcastMessage(new PlayerLeft(player.userData.userId));
+
+
         this.emit("PlayerLeft", player);
     }
 

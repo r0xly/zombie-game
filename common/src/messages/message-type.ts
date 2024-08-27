@@ -7,4 +7,5 @@ export const enum MessageType
     ServerChatMessage,
     PlayerJoined,
     PlayerLeft,
+    Welcome
 }

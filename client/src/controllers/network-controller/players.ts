@@ -1,4 +1,4 @@
-import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids } from "../../../../common/src/messages/message-objects";
+import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids, WelcomeMessage } from "../../../../common/src/messages/message-objects";
 import { MessageType } from "../../../../common/src/messages/message-type";
 import { Humanoid } from "../../objects/humanoid";
 import { NetworkController } from ".";
@@ -13,12 +13,25 @@ export interface Player
 export class Players 
 {
     private players: Record<string, Player> = {};
+    
+    localPlayer = 
+    {
+        displayName: "undefined",
+        userId: "undefined"
+    }
 
     constructor(private networkController: NetworkController)
     {
         networkController.on(MessageType.SyncPlayerHumanoids, message => this.onSyncPlayerHumanoids(message));
         networkController.on(MessageType.PlayerJoined, message => this.onPlayerAdded(message));
         networkController.on(MessageType.PlayerLeft, message => this.onPlayerRemoved(message));
+        networkController.on(MessageType.Welcome, message => this.onWelcome(message));
+    }
+
+    private onWelcome(message: WelcomeMessage)
+    {
+        this.localPlayer.displayName = message.localPlayer.displayName;
+        this.localPlayer.userId = message.localPlayer.userId; 
     }
 
     private onSyncPlayerHumanoids(message: SyncPlayerHumanoids)
