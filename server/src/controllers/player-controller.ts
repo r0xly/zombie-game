@@ -29,10 +29,6 @@ export class PlayerController extends EventEmitter
         super();
     }
 
-    /**
-     * Creates a Player object for a WebSocket connection.
-     * @param websocket 
-     */
     registerPlayer(websocket: WebSocket<UserData>)
     {
         const userData = websocket.getUserData();
@@ -53,10 +49,6 @@ export class PlayerController extends EventEmitter
         this.players[userData.userId] = player;
     }
 
-    /**
-     * Removes a pre-existing Player object for a WebSocket connection.
-     * @param websocket 
-     */
     unregisterPlayer(websocket: WebSocket<UserData>)
     {
         const player = this.getPlayerFromWebSocket(websocket);

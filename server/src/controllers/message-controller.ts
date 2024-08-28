@@ -9,7 +9,6 @@ import EventEmitter from "events";
 
 const textDecoder = new TextDecoder();
 
-// Defines the differnt event types for intellisense.
 export declare interface MessageController
 {
     on(event: MessageType.UpdatePlayerHumanoid, listener: (sender: Player, message: UpdatePlayerHumanoid) => void): this

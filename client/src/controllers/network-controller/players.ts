@@ -5,7 +5,7 @@ import { NetworkController } from ".";
 
 export interface Player
 {
-    humanoid: Humanoid
+    humanoid: Humanoid,
     displayName: string,
     userId: string,
 }

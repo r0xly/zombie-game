@@ -7,7 +7,6 @@ export class HumanoidController
 {
     constructor(private server: Server)
     {
-        // Updates the a Player's Humanoid's state on the server.
         server.messageController.on(MessageType.UpdatePlayerHumanoid, (player, message) => 
         {
             player.humanoid.x = message.x;
@@ -19,7 +18,6 @@ export class HumanoidController
 
     tick(deltaTime: number)
     {
-        // Replicates the state of Player Humanoids.
         const playerHumanoids = {}
 
         this.server.playerController.getPlayers().forEach(player => 
