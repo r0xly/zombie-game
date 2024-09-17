@@ -1,7 +1,7 @@
 import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids, WelcomeMessage } from "../../../../common/src/messages/message-objects";
 import { MessageType } from "../../../../common/src/messages/message-type";
 import { Humanoid } from "../../objects/humanoid";
-import { NetworkController } from ".";
+import { NetworkController, NetworkLogType } from ".";
 
 export interface Player
 {
@@ -23,8 +23,8 @@ export class Players
     constructor(private networkController: NetworkController)
     {
         networkController.on(MessageType.SyncPlayerHumanoids, message => this.onSyncPlayerHumanoids(message));
-        networkController.on(MessageType.PlayerJoined, message => this.onPlayerAdded(message));
-        networkController.on(MessageType.PlayerLeft, message => this.onPlayerRemoved(message));
+        networkController.on(MessageType.PlayerJoined, message => this.addPlayer(message.displayName, message.userId));
+        networkController.on(MessageType.PlayerLeft, message => this.removePlayer(message.userId));
         networkController.on(MessageType.Welcome, message => this.onWelcome(message));
     }
 
@@ -32,6 +32,11 @@ export class Players
     {
         this.localPlayer.displayName = message.localPlayer.displayName;
         this.localPlayer.userId = message.localPlayer.userId; 
+
+        this.networkController.log(NetworkLogType.DEBUG, `LocalPlayer name: >>${message.localPlayer.displayName}<<`);
+        this.networkController.log(NetworkLogType.DEBUG, `LocalPlayer id:   >>${message.localPlayer.userId}<<`);
+
+        message.otherPlayers.forEach(player => this.addPlayer(player.displayName, player.userId));
     }
 
     private onSyncPlayerHumanoids(message: SyncPlayerHumanoids)
@@ -40,34 +45,46 @@ export class Players
         {
             const player = this.players[userId];
 
-            if (!player)
+            if (userId === this.localPlayer.userId)
+            {
                 continue;
+            }
+            else if (!player)
+            {
+                this.networkController.log(NetworkLogType.WARNING, `Failed to sync a player's humanoid. Player with id >>${userId}<< does not exist.`);
+                continue;
+            }
 
-            const { x, y } = message.players[userId];
-            player.humanoid.x = x;
-            player.humanoid.y = y;
+            const humanoidData = message.players[userId];
+            player.humanoid.x = humanoidData.x;
+            player.humanoid.y = humanoidData.y;
         }
     }
 
-    private onPlayerAdded(message: PlayerJoined)
+    private addPlayer(displayName: string, userId: string)
     {
         const humanoid = new Humanoid();
-        
-        this.players[message.userId] =
+
+        this.players[userId] = 
         {
-            displayName: message.displayName,
-            userId: message.userId,
-            humanoid: humanoid,
+            displayName: displayName,
+            userId: userId,
+            humanoid: humanoid
         }
 
         this.networkController.game.workspace.addChild(humanoid);
     }
 
-    private onPlayerRemoved(message: PlayerLeft)
+    private removePlayer(userId: string)
     {
-        const player = this.players[message.userId];
-        player.humanoid.destroy();
+        const player = this.players[userId];
 
-        delete this.players[message.userId];
+        if (player)
+        {
+            player.humanoid.destroy();
+            delete this.players[userId];
+        }
     }
+
+
 }

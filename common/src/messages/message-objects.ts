@@ -26,7 +26,7 @@ export class ServerChatMessage
 @Message(MessageType.Welcome)
 export class WelcomeMessage
 {
-    constructor(public localPlayer: { userId: string, displayName: string }, public otherPlayers: { userId: string, displayName: string }[]) { }
+    constructor(public localPlayer: { userId: string, displayName: string }, public otherPlayers: { userId: string, displayName: string, x: number, y :number }[]) { }
 }
 
 /** A Server to Client message used to notify Players that a new Player has joined. */

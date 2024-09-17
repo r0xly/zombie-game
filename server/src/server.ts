@@ -4,29 +4,58 @@ import { MessageController } from "./controllers/message-controller";
 import { PlayerController } from "./controllers/player-controller";
 import { generateGuestUserData } from "./util/user";
 import { UserData } from "./util/user";
+import { EventEmitter } from "stream";
+import { LogsController } from "./controllers/logs-controller";
 
-export class Server 
+export declare interface Server 
 {
-    messageController = new MessageController(this);
-    humanoidController = new HumanoidController(this);
-    playerController = new PlayerController(this);
+    on(event: string, listener: Function): this;
+    on(event: "open", listener: (webSocket: WebSocket<UserData>) => void);
+    on(event: "close", listener: (webSocket: WebSocket<UserData>) => void);
+    on(event: "message", listener: (webSocket: WebSocket<UserData>, message: ArrayBuffer) => void);
+}
+
+export class Server extends EventEmitter
+{
+    logs = new LogsController(this);
+    messages = new MessageController(this);
+    humanoids = new HumanoidController(this);
+    players = new PlayerController(this);
 
     constructor(public app: TemplatedApp, port: number)
     {
+        super();
+
         app.ws<UserData>("/*",
         {
-            upgrade: (res, req, ctx) => this.handleUpgrade(res, req, ctx),
-            message: (ws, msg) => this.messageController.handleMessage(ws, msg),
-            close: (ws) => this.playerController.unregisterPlayer(ws),
-            open: (ws) => this.playerController.registerPlayer(ws),
+            upgrade: (res, req, ctx) => 
+            { 
+                this.handleUpgrade(res, req, ctx);
+            },
+            message: (ws, msg) => 
+            { 
+                this.emit("message", ws, msg);
+            },
+            close: (ws) => 
+            { 
+                this.emit("close", ws);
+            },
+            open: (ws) => 
+            { 
+                this.emit("open", ws);
+            },
         });
 
         app.listen(port, (token: any) =>
         {
             if (!token)
+            {
                 console.error(`Failed to listen to poart ${port}`);
-
-            console.log(`Listenting to port ${port}...`)
+            }
+            else 
+            {
+                console.log(`Listenting to port ${port}...`)
+            }
         });
 
     }

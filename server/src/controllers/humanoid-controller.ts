@@ -7,7 +7,7 @@ export class HumanoidController
 {
     constructor(private server: Server)
     {
-        server.messageController.on(MessageType.UpdatePlayerHumanoid, (player, message) => 
+        server.messages.on(MessageType.UpdatePlayerHumanoid, (player, message) => 
         {
             player.humanoid.x = message.x;
             player.humanoid.y = message.y;
@@ -20,7 +20,7 @@ export class HumanoidController
     {
         const playerHumanoids = {}
 
-        this.server.playerController.getPlayers().forEach(player => 
+        this.server.players.getPlayers().forEach(player => 
             playerHumanoids[player.userData.userId] = 
             {
                 x: player.humanoid.x,
@@ -28,6 +28,6 @@ export class HumanoidController
             }
         );
 
-        this.server.messageController.broadcastMessage(new SyncPlayerHumanoids(playerHumanoids));
+        this.server.messages.broadcastMessage(new SyncPlayerHumanoids(playerHumanoids));
     }
 }

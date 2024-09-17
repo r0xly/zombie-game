@@ -5,6 +5,15 @@ import { EventEmitter } from "pixi.js";
 import { Players } from "./players";
 import { Game } from "../../game";
 
+const SHOW_DEBUG_LOG = false;
+
+export const enum NetworkLogType
+{
+    LOG="LOG",
+    ERROR="ERROR",
+    WARNING="WARNING",
+    DEBUG="DEBUG"
+}
 
 export declare interface NetworkController
 {
@@ -28,16 +37,37 @@ export class NetworkController extends EventEmitter
         const websocket = new WebSocket(`${url}?display-name=${displayName}`);
 
         websocket.onmessage = (msg) => this.emit(...parseMessage(msg.data));
-        websocket.onopen = () => console.log("WebSocket open.")
-        websocket.onclose = () => console.log("WebSocket closed.")
+        websocket.onopen = () => this.log(NetworkLogType.LOG, "WebSocket open");
+        websocket.onclose = () => this.log(NetworkLogType.LOG, "WebSocket closed");
 
         this.websocket = websocket;
+    }
+
+    log(type: NetworkLogType, content: string)
+    {
+        const message = `(NETWORK ${type}) ${content}`;
+
+        if (type === NetworkLogType.ERROR)
+        {
+            console.error(message);
+        }
+        else if (type === NetworkLogType.WARNING)
+        {
+            console.warn(message);
+        }
+        else if (type !== NetworkLogType.DEBUG || !SHOW_DEBUG_LOG)       // This prevents any debug messages from logging when SHOW_DEBUG_LOG is set to false
+        {
+            console.log(message);
+        }
     }
 
     sendMessage(message: object)
     {
         if (this.websocket.readyState !== WebSocket.OPEN)
-            return console.warn(`Failed to send message ${message}. WebSocket is not open.`)
+        {
+            this.log(NetworkLogType.ERROR, `Failed to send message ${message}. WebSocket is not open.`);
+            return;
+        }
 
         try 
         {

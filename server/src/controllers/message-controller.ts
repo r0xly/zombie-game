@@ -21,18 +21,23 @@ export class MessageController extends EventEmitter
     constructor(public server: Server) 
     { 
         super(); 
+
+        server.on("message", (ws, msg) => 
+        {
+            this.handleMessage(ws, msg);
+        });
     }
 
     handleMessage(sender: WebSocket<UserData>, messageBuffer: ArrayBuffer) 
     {
         try 
         {
-            const player = this.server.playerController.getPlayerFromUserId(sender.getUserData().userId);
+            const player = this.server.players.getPlayerFromUserId(sender.getUserData().userId);
             const [messageType, messageObject] = parseMessage(textDecoder.decode(messageBuffer)); 
-
+            
             if (!player)
                 return;
-
+            
             this.emit(messageType, player, messageObject);
         }
         catch(err)
@@ -49,6 +54,6 @@ export class MessageController extends EventEmitter
 
     broadcastMessage(message: object, filter?: Player)
     {
-        this.server.playerController.getPlayers().forEach(player => { if (player !== filter) this.sendMessage(player, message) });
+        this.server.players.getPlayers().forEach(player => { if (player !== filter) this.sendMessage(player, message) });
     }
 }

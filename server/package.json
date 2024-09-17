@@ -7,11 +7,12 @@
   },
   "dependencies": {
     "@types/events": "^3.0.3",
+    "@types/node": "^22.5.5",
     "events": "^3.3.0",
     "uWebSockets.js": "github:uNetworking/uWebSockets.js#v20.47.0"
   },
   "devDependencies": {
     "ts-node": "^10.9.2",
-    "typescript": "^5.5.4"
+    "typescript": "^5.6.2"
   }
 }

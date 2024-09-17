@@ -11,7 +11,7 @@ export class Game
 {
     workspace = new Container();
     
-    networkController = new NetworkController(this, "ws://127.0.0.1:9001", "username");
+    networkController = new NetworkController(this, "ws://192.168.1.53:9001", "username");
     projectileController = new ProjectileController(this);
     collisionController = new CollisionController(this);
     playerController = new PlayerController(this);
