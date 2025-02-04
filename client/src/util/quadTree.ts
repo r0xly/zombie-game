@@ -49,12 +49,16 @@ export class QuadTree {
 
     insert(container: PIXI.Container) {
         const bounds = container.getLocalBounds();
+
         const boundingBox = new BoundingBox(
             container.x + bounds.x,
             container.y + bounds.y,
             bounds.width,
             bounds.height
         );
+
+
+        console.log(boundingBox)
 
         if (!this.bounds.intersects(boundingBox)) {
             return false;
@@ -74,6 +78,21 @@ export class QuadTree {
             }
         }
         return false;
+    }
+
+    queryContainer(container: PIXI.Container)
+    {
+        const bounds = container.getLocalBounds();
+
+        const boundingBox = new BoundingBox(
+            container.x + bounds.x,
+            container.y + bounds.y,
+            bounds.width,
+            bounds.height
+        );
+
+        return this.query(boundingBox);
+           
     }
 
     query(range: BoundingBox, found: PIXI.Container[] = []): PIXI.Container[] {

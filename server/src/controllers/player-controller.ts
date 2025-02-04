@@ -4,10 +4,11 @@ import { UserData } from "../util/user";
 import EventEmitter from "events";
 import { PlayerJoined, PlayerLeft, WelcomeMessage } from "../../../common/src/messages/message-objects";
 import { ServerLogType } from "./logs-controller";
+import { Humanoid } from "../objects/humanoid";
 
 export interface Player
 {
-    humanoid: { x: number, y: number },
+    humanoid: Humanoid,
     websocket: WebSocket<UserData>,
     userData: UserData,
 }
@@ -41,6 +42,7 @@ export class PlayerController extends EventEmitter
     private addPlayer(websocket: WebSocket<UserData>)
     {
         const userData = websocket.getUserData();
+        const zombies = [];         // A list of all the current zombies
         const otherPlayers = [];    // A list of all other current players and their positions that will be sent to the client
         const localPlayer =         // The player data being sent to the client
         {
@@ -49,7 +51,7 @@ export class PlayerController extends EventEmitter
         }
         const player: Player =      // The player object being stored on the server
         {
-            humanoid: { x: 0, y: 0 },
+            humanoid: new Humanoid(),
             websocket: websocket,
             userData: userData,
         }
@@ -64,10 +66,20 @@ export class PlayerController extends EventEmitter
                 y: player.humanoid.y
             });
         });
-        
-        this.server.logs.log(ServerLogType.DEBUG, `(Player Added)   Id: >>${userData.userId}<<  Name: >>${userData.displayName}<<`);
 
-        this.server.messages.sendMessage(player, new WelcomeMessage(localPlayer, otherPlayers));
+        for (const zombie of this.server.zombies.getZombies())     // Generates a list of all zombies
+        {
+            zombies.push(
+            {
+                zombieId: zombie.id,
+                x: zombie.humanoid.x,
+                y: zombie.humanoid.y
+            });
+        }
+        
+        this.server.logs.log(ServerLogType.DEBUG, `(Player Added)\n - Id:\t\t\t${userData.userId}\n - Display name:\t${userData.displayName}`);
+
+        this.server.messages.sendMessage(player, new WelcomeMessage(localPlayer, otherPlayers, zombies));
         this.server.messages.broadcastMessage(new PlayerJoined(player.userData.userId, player.userData.displayName));
 
         this.emit("PlayerJoined", player);
@@ -85,7 +97,7 @@ export class PlayerController extends EventEmitter
             this.server.messages.broadcastMessage(new PlayerLeft(userData.userId));
             this.emit("PlayerLeft", player);
 
-            this.server.logs.log(ServerLogType.DEBUG, `(Player Removed) Id: >>${userData.userId}<<  Name: >>${userData.displayName}<<`);
+            this.server.logs.log(ServerLogType.DEBUG, `(Player Removed)\n - Id:\t\t\t${userData.userId}\n - Display name:\t${userData.displayName}`);
         }
         else
         {

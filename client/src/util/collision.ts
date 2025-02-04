@@ -25,6 +25,3 @@ export function pointCollides(x: number, y: number, object: Container)
         y < bounds.maxY
     )
 }
-
-const graphics = new Graphics();
-graphics

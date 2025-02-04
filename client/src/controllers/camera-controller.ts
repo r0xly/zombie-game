@@ -2,7 +2,7 @@ import { Camera } from "pixi-game-camera";
 import { Game } from "../game";
 import { applyMatrix, Ticker } from "pixi.js";
 
-const CAMERA_MOVE_TOLERANCE = 0.05;
+const CAMERA_MOVE_TOLERANCE = 0.1;
 
 export class CameraController
 {

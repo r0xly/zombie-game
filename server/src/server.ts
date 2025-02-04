@@ -6,6 +6,7 @@ import { generateGuestUserData } from "./util/user";
 import { UserData } from "./util/user";
 import { EventEmitter } from "stream";
 import { LogsController } from "./controllers/logs-controller";
+import { ZombieController } from "./controllers/zombie-controller";
 
 export declare interface Server 
 {
@@ -21,6 +22,7 @@ export class Server extends EventEmitter
     messages = new MessageController(this);
     humanoids = new HumanoidController(this);
     players = new PlayerController(this);
+    zombies = new ZombieController(this);
 
     constructor(public app: TemplatedApp, port: number)
     {

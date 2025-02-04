@@ -1,9 +1,12 @@
 import { Point, Ticker } from "pixi.js";
 import { Game } from "../game";
-import { Humanoid, HumanoidState } from "../objects/humanoid";
+import { Humanoid } from "../objects/humanoid";
 import { Blaster } from "../objects/blaster";
 import { BlasterData } from "../data/blaster-data";
 import { UpdatePlayerHumanoid } from "../../../common/src/messages/message-objects";
+import { Weapon } from "../objects/tools/weapon";
+import { WeaponData } from "../data/weapon-data";
+import { HumanoidState } from "../../../common/src/types/humanoid-state";
 
 const PLAYER_SPEED = 8;
 
@@ -20,10 +23,9 @@ export class PlayerController
     {
         this.despawnPlayer();
 
-        const blaster = new Blaster(BlasterData.AA22, this.game.projectileController);
-
         this.player = new Humanoid();
-        this.player.equipTool(blaster);
+
+        this.player.equipTool(new Weapon(WeaponData.IronSword));
 
         this.player.on("stateChanged", (newState, oldState) =>
         {
@@ -38,11 +40,12 @@ export class PlayerController
 
     despawnPlayer()
     {
-        if (!this.player)
-            return;
+        if (this.player)
+        {
+            this.player.destroy();
+            this.player = undefined;
+        }
 
-        this.player.destroy();
-        this.player = undefined;
     }
 
     update(ticker: Ticker)
@@ -54,7 +57,7 @@ export class PlayerController
 
         try
         {
-            this.game.networkController.sendMessage(new UpdatePlayerHumanoid(player.x, player.y));
+            this.game.networkController.sendMessage(new UpdatePlayerHumanoid(player.getHumanoidData()));
         }
         catch
         {
@@ -73,14 +76,5 @@ export class PlayerController
 
         if (!collisionController.pointCollides(this.player.x, y)) 
             this.player.y = y;                
-
-        if (this.player.equippedTool && this.player.equippedTool instanceof Blaster)
-        {
-            const pointer = this.game.inputController.pointer;
-            this.player.equippedTool.lookAt(pointer.x, pointer.y);
-
-            if (pointer.down)
-                this.player.equippedTool.fireAt(pointer.x, pointer.y);
-        }
     }
 }

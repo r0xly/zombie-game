@@ -18,12 +18,12 @@ h2
 
 h3
 {
-    font-size: 2.074;
+    font-size: 2.074rem;
 }
 
 h4
 {
-    font: 1.728;
+    font-size: 1.728rem;
 }
 
 h5
@@ -42,4 +42,37 @@ h6
     display: flex;
     justify-content: space-between;
     text-align: left;
+}
+
+
+.blury-background
+{
+    position: absolute;
+    width: 100vw;
+    height: 100vh;
+    backdrop-filter: blur(10px) grayscale(50%);
+    background-color: rgba(0, 0, 0, 0.7);
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.popup-window
+{
+    width: 400px;
+    height: 65px;
+    padding: 10px;
+    border-radius: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    background-color: white;
+    gap: 10px;
+    box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.3);
+}
+
+.popup-window button
+{
+    padding: 2px;
 }

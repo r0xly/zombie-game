@@ -2,6 +2,9 @@ import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids, WelcomeMessage } from ".
 import { MessageType } from "../../../../common/src/messages/message-type";
 import { Humanoid } from "../../objects/humanoid";
 import { NetworkController, NetworkLogType } from ".";
+import { WeaponData } from "../../data/weapon-data";
+import { Weapon } from "../../objects/tools/weapon";
+import { getTool } from "../../util/get-tool";
 
 export interface Player
 {
@@ -35,6 +38,7 @@ export class Players
 
         this.networkController.log(NetworkLogType.DEBUG, `LocalPlayer name: >>${message.localPlayer.displayName}<<`);
         this.networkController.log(NetworkLogType.DEBUG, `LocalPlayer id:   >>${message.localPlayer.userId}<<`);
+        this.networkController.game.playerController.spawnPlayer();
 
         message.otherPlayers.forEach(player => this.addPlayer(player.displayName, player.userId));
     }
@@ -47,6 +51,7 @@ export class Players
 
             if (userId === this.localPlayer.userId)
             {
+                // This is the data for our own character, so we should skip it
                 continue;
             }
             else if (!player)
@@ -56,14 +61,42 @@ export class Players
             }
 
             const humanoidData = message.players[userId];
-            player.humanoid.x = humanoidData.x;
-            player.humanoid.y = humanoidData.y;
+            player.humanoid.x = humanoidData.position.x;
+            player.humanoid.y = humanoidData.position.y;
+
+            const equippedTool = player.humanoid.equippedTool;
+
+            if (equippedTool && !humanoidData.tool)
+            {
+                // The player has uneqiupped a tool
+                player.humanoid.unequipTool();
+            }   
+            else if ((equippedTool && humanoidData.tool && humanoidData.tool.name !== equippedTool.constructor.name) || (!equippedTool && humanoidData.tool))
+            {
+                // The player has changed their tool or equipped a new one
+                const newTool = getTool(humanoidData.tool.catagory, humanoidData.tool.name);
+
+                if (newTool)
+                {
+                    player.humanoid.equipTool(newTool);
+                    newTool.setRotation(humanoidData.tool.rotation);
+                }
+                else 
+                {
+                    console.warn(`Failed to equip tool called ${humanoidData.tool.name} (catagory: ${humanoidData.tool.catagory}) for player ${player.displayName} (${player.userId}). Tool does not exist.`)
+                }
+            }
+            else if (equippedTool)
+            {
+                equippedTool.setRotation(humanoidData.tool.rotation);
+            }
+
         }
     }
 
     private addPlayer(displayName: string, userId: string)
     {
-        const humanoid = new Humanoid();
+        const humanoid = new Humanoid(displayName);
 
         this.players[userId] = 
         {
@@ -85,6 +118,4 @@ export class Players
             delete this.players[userId];
         }
     }
-
-
 }
