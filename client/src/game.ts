@@ -16,7 +16,7 @@ export class Game
     workspace = new Container();
     
     popupWindowController = new PopupWindowController();
-    networkController = new NetworkController(this, "ws://127.0.0.1:9001", prompt("Name:"));
+    networkController = new NetworkController(this, "ws://127.0.0.1:9001", "Player");
     projectileController = new ProjectileController(this);
     collisionController = new CollisionController(this);
     playerController = new PlayerController(this);

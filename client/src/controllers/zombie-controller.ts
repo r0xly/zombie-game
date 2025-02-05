@@ -5,11 +5,10 @@ import { Humanoid } from "../objects/humanoid"
 
 export class ZombieController
 {
-    zombies: Record<string, Humanoid> = {};       // A map of zombie Ids to their associated Humanoid objects
+    zombiesMap = new Map<string, Humanoid>();       // A map of zombie Ids to their associated Humanoid objects
 
     constructor(private game: Game)
     {
-
         game.networkController.on(MessageType.ZombieSpawned, message =>
         {
             this.spawnZombie(message.zombieId, message.x, message.y);
@@ -47,16 +46,16 @@ export class ZombieController
         zombie.tint = "#09d12e";        // Green
 
         this.game.workspace.addChild(zombie);
-        this.zombies[id] = zombie;
+        this.zombiesMap.set(id, zombie);
     }
 
     despawnZombie(id: string)
     {
-        const zombie = this.zombies[id];
+        const zombie = this.zombiesMap.get(id);
 
         if (zombie)
         {
-            delete this.zombies[id];
+            this.zombiesMap.delete(id);
             zombie.destroy();
         }
     }
@@ -65,13 +64,13 @@ export class ZombieController
     {
         for (const zombieId in message.zombies)
         {
-            const zombie = message.zombies[zombieId];
-            const humanoid = this.zombies[zombieId];
+            const zombieData = message.zombies[zombieId];
+            const humanoid = this.zombiesMap.get(zombieId);
 
-            if (zombie && humanoid)
+            if (zombieData && humanoid)
             {
-                humanoid.x = zombie.position.x;
-                humanoid.y = zombie.position.y;   
+                humanoid.x = zombieData.position.x;
+                humanoid.y = zombieData.position.y;   
             }
             else
             {
@@ -82,6 +81,6 @@ export class ZombieController
 
     getZombies()
     {
-        return Object.values(this.zombies);
+        return Object.values(this.zombiesMap);
     }
 }

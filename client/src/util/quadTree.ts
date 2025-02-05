@@ -58,8 +58,6 @@ export class QuadTree {
         );
 
 
-        console.log(boundingBox)
-
         if (!this.bounds.intersects(boundingBox)) {
             return false;
         }

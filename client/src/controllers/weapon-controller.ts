@@ -8,13 +8,28 @@ import { AttackZombie } from "../../../common/src/messages/message-objects";
 
 export class WeaponController
 {
-    /** A set of humanoids that have already been handled for collisions. */
-    private hitHumanoids = new Set<string>();
-    previousState = ToolState.idle;
+    // A set of humanoids that have already been registered for collisions. The key is their respective ID. This resets every swing.
+    private hitZombieHumanoids = new Set<string>();
+    private hitPlayerHumanoids = new Set<string>();
+
+    private previousWeaponState = ToolState.idle;
 
     constructor(private game: Game)
     {
         game.pixi.ticker.add(ticker => this.update(ticker));
+    }
+
+    private handleCollision(weapon: Weapon, humanoid: Humanoid, id: string, cache: Set<string>)
+    {
+        if (!cache.has(id) && boxCollides(humanoid, weapon))
+        {
+            cache.add(id);
+
+            const player = this.game.playerController.player;
+            const knockbackAngle = Math.atan2(humanoid.y - player.y, humanoid.x - player.x);
+
+            this.game.networkController.sendMessage(new AttackZombie(id, weapon.options.damage, weapon.options.knockbackForce, knockbackAngle));
+        }
     }
 
     private update(ticker: Ticker)
@@ -31,29 +46,21 @@ export class WeaponController
                 weapon.swing();
             }
 
-            // Collison check
+            // Check for collision is the tool is currently swinging
             if (weapon.state === ToolState.active)
             {
-                if (this.previousState === ToolState.idle)
+                // Resets the hit cache if this a new swing
+                if (this.previousWeaponState === ToolState.idle)
                 {
-                    this.hitHumanoids.clear();
+                    this.hitPlayerHumanoids.clear();
+                    this.hitZombieHumanoids.clear();
                 }
 
-                for (const zombieId in this.game.zombieControler.zombies)
-                {
-                    const zombie = this.game.zombieControler.zombies[zombieId];
-
-                    if (!this.hitHumanoids.has(zombieId) && boxCollides(zombie, weapon))
-                    {
-                        this.hitHumanoids.add(zombieId);
-                        const angle = Math.atan2(zombie.position.y - this.game.playerController.player.position.y, zombie.position.x - this.game.playerController.player.position.x);
-                        this.game.networkController.sendMessage(new AttackZombie(zombieId, 25, 2000, angle));
-                    }
-                }
+                this.game.zombieControler.zombiesMap.forEach((zombie, zombieId) => this.handleCollision(weapon, zombie, zombieId, this.hitZombieHumanoids));
             }
 
             weapon.update(pointer.x, pointer.y);
-            this.previousState = weapon.state;
+            this.previousWeaponState = weapon.state;
         }
 
     }

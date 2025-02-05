@@ -13,6 +13,8 @@ export const WeaponData: Record<string, WeaponOptions> =
         rotation: -Math.PI / 2,
         handPositions: [new Point(-12, 6)],
         swingDebounce: 600,
+        knockbackForce: 2000,
+        damage: 25,
     },
 
     IronBattleAxe:
@@ -24,6 +26,8 @@ export const WeaponData: Record<string, WeaponOptions> =
         anchorPoint: new Point(0.55, 0.6),
         rotation: 0,
         handPositions: [new Point(-10, -38), new Point(-10, 26)],
-        swingDebounce: 1000
+        swingDebounce: 1000,
+        knockbackForce: 2000,
+        damage: 25,
     }
 }

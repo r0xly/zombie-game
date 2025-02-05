@@ -6,8 +6,13 @@ export interface WeaponOptions extends ToolOptions
 {
     /** The cooldown (in ms) between swings. */
     swingDebounce: number,
-}
+    
+    /** The backward force applied to an humanoid upon being hit. A force around 2000 is a reasonable value. */
+    knockbackForce: number,
 
+    /** The base damange dealt to a humanoid upon being hit. */
+    damage: number,
+}
 
 export class Weapon extends Tool
 {
@@ -43,7 +48,7 @@ export class Weapon extends Tool
             else if (t < 1)
             {
                 // Third half: Return to original postion
-                this.rotationOffset = -swingDistance + swingDistance * easeOutQuadBounce((t - 0.75) * 4) 
+                this.rotationOffset = -swingDistance + swingDistance * easeOutQuad((t - 0.75) * 4) 
             }
         }
 
