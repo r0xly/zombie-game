@@ -1,4 +1,4 @@
-import { AttackZombie, SendChatMesage, UpdatePlayerHumanoid } from "../../../common/src/messages/message-objects";
+import { AttackPlayer, AttackZombie, SendChatMesage, UpdatePlayerHumanoid } from "../../../common/src/messages/message-objects";
 import { parseMessage, stringifyMessage } from "../../../common/src/messages/message-parser";
 import { MessageType } from "../../../common/src/messages/message-type";
 import { RecognizedString, WebSocket } from "uWebSockets.js";
@@ -15,6 +15,7 @@ export declare interface MessageController
     on(event: MessageType.UpdatePlayerHumanoid, listener: (sender: Player, message: UpdatePlayerHumanoid) => void): this
     on(event: MessageType.SendChatMesage, listener: (sender: Player, message: SendChatMesage) => void): this,
     on(event: MessageType.AttackZombie, listener: (sender: Player, message: AttackZombie) => void): this,
+    on(event: MessageType.AttackPlayer, listener: (sender: Player, message: AttackPlayer) => void): this,
     on(event: string, listener: Function): this;
 }
 

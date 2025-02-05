@@ -7,16 +7,25 @@ import { UpdatePlayerHumanoid } from "../../../common/src/messages/message-objec
 import { Weapon } from "../objects/tools/weapon";
 import { WeaponData } from "../data/weapon-data";
 import { HumanoidState } from "../../../common/src/types/humanoid-state";
+import { MessageType } from "../../../common/src/messages/message-type";
 
 const PLAYER_SPEED = 8;
 
 export class PlayerController
 {
     player?: Humanoid;
+    knockbackVelocity = new Point();
 
     constructor(private game: Game)
     {
         game.pixi.ticker.add(ticker => this.update(ticker));
+
+        game.networkController.on(MessageType.TakeDamage, message =>
+        {
+            this.player.health -= message.damage;
+            this.knockbackVelocity.x = Math.cos(message.knockbackAngle) * message.knockbackForce / 100;
+            this.knockbackVelocity.y = Math.sin(message.knockbackAngle) * message.knockbackForce / 100;
+        });
     }
 
     spawnPlayer()
@@ -68,13 +77,16 @@ export class PlayerController
 
         const moveDirection = new Point(this.game.inputController.getHorizontalAxis(), this.game.inputController.getVerticalAxis()).normalize();
 
-        const x = player.x + (PLAYER_SPEED * deltaTime * moveDirection.x || 0)
-        const y = player.y + (PLAYER_SPEED * deltaTime * moveDirection.y || 0)
+        const x = player.x + (PLAYER_SPEED * deltaTime * moveDirection.x || 0) + this.knockbackVelocity.x * deltaTime;
+        const y = player.y + (PLAYER_SPEED * deltaTime * moveDirection.y || 0) + this.knockbackVelocity.y * deltaTime;
 
         if (!collisionController.pointCollides(x, this.player.y)) 
             this.player.x = x;
 
         if (!collisionController.pointCollides(this.player.x, y)) 
             this.player.y = y;                
+    
+        this.knockbackVelocity.x *= 0.9;
+        this.knockbackVelocity.y *= 0.9;
     }
 }

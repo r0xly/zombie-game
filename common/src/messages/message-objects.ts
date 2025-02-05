@@ -79,6 +79,21 @@ export class AttackZombie
     constructor(public zombieId: string, public damage: number, public knockbackForce: number, public knockbackAngle: number) { }
 }
 
+/** (TEMPORARY) A Client to Server message to notify the Server a player has been damaged. */
+@Message(MessageType.AttackPlayer)
+export class AttackPlayer
+{
+    constructor(public playerId: string, public damage: number, public knockbackForce: number, public knockbackAngle: number) { }
+}
+
+/** A Server to Client message used to notify a player they have taken damage */
+@Message(MessageType.TakeDamage)
+export class TakeDamage 
+{
+    constructor(public damage: number, public knockbackForce: number, public knockbackAngle: number) { }
+}
+
+
 /*
 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
 *

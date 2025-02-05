@@ -2,9 +2,10 @@ import { Server } from "../server";
 import { WebSocket } from "uWebSockets.js";
 import { UserData } from "../util/user";
 import EventEmitter from "events";
-import { PlayerJoined, PlayerLeft, WelcomeMessage } from "../../../common/src/messages/message-objects";
+import { PlayerJoined, PlayerLeft, TakeDamage, WelcomeMessage } from "../../../common/src/messages/message-objects";
 import { ServerLogType } from "./logs-controller";
 import { Humanoid } from "../objects/humanoid";
+import { MessageType } from "../../../common/src/messages/message-type";
 
 export interface Player
 {
@@ -36,6 +37,16 @@ export class PlayerController extends EventEmitter
         server.on("close", websocket =>
         {
             this.removePlayer(websocket);
+        });
+
+        server.messages.on(MessageType.AttackPlayer, (player, message) => 
+        {
+            const targetPlayer = this.players[message.playerId];
+
+            if (targetPlayer)
+            {
+                server.messages.sendMessage(targetPlayer, new TakeDamage(message.damage, message.knockbackForce, message.knockbackAngle));
+            }
         });
     }
 

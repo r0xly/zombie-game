@@ -1,4 +1,4 @@
-import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids, SyncZombieHumanoids, WelcomeMessage, ZombieDespawned, ZombieSpawned } from "../../../../common/src/messages/message-objects";
+import { PlayerJoined, PlayerLeft, SyncPlayerHumanoids, SyncZombieHumanoids, TakeDamage, WelcomeMessage, ZombieDespawned, ZombieSpawned } from "../../../../common/src/messages/message-objects";
 import { parseMessage, stringifyMessage } from "../../../../common/src/messages/message-parser";
 import { MessageType } from "../../../../common/src/messages/message-type";
 import { EventEmitter } from "pixi.js";
@@ -26,6 +26,8 @@ export declare interface NetworkController
     on(event: MessageType.ZombieSpawned, listener: (message: ZombieSpawned) => void): this
     on(event: MessageType.ZombieDespawned, listener: (message: ZombieDespawned) => void): this
     on(event: MessageType.SyncZombieHumanoids, listener: (message: SyncZombieHumanoids) => void): this
+
+    on(event: MessageType.TakeDamage, listener: (message: TakeDamage) => void): this
 
     on(event: string, listener: Function): this;
 }

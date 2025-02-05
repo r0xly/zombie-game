@@ -31,6 +31,11 @@ export class Players
         networkController.on(MessageType.Welcome, message => this.onWelcome(message));
     }
 
+    getPlayers()
+    {
+        return Object.values(this.players);
+    }
+
     private onWelcome(message: WelcomeMessage)
     {
         this.localPlayer.displayName = message.localPlayer.displayName;

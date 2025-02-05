@@ -10,6 +10,9 @@ export const enum MessageType
     SyncZombieHumanoids,
 
     AttackZombie,
+    AttackPlayer,
+
+    TakeDamage,
 
     SendChatMesage,
     UserChatMesssage,

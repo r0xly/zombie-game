@@ -4,7 +4,14 @@ import { Weapon } from "../objects/tools/weapon";
 import { Humanoid } from "../objects/humanoid";
 import { ToolState } from "../../../common/src/types/tool-state";
 import { boxCollides } from "../util/collision";
-import { AttackZombie } from "../../../common/src/messages/message-objects";
+import { AttackPlayer, AttackZombie } from "../../../common/src/messages/message-objects";
+
+type AttackMessage = new (
+  id: string,
+  damage: number,
+  knockbackForce: number,
+  knockbackAngle: number
+) => any;
 
 export class WeaponController
 {
@@ -19,16 +26,18 @@ export class WeaponController
         game.pixi.ticker.add(ticker => this.update(ticker));
     }
 
-    private handleCollision(weapon: Weapon, humanoid: Humanoid, id: string, cache: Set<string>)
+    private handleCollision(weapon: Weapon, humanoid: Humanoid, id: string, cache: Set<string>, message: AttackMessage)
     {
+        console.log("hey??")
         if (!cache.has(id) && boxCollides(humanoid, weapon))
         {
+        console.log("hey????")
             cache.add(id);
 
             const player = this.game.playerController.player;
             const knockbackAngle = Math.atan2(humanoid.y - player.y, humanoid.x - player.x);
 
-            this.game.networkController.sendMessage(new AttackZombie(id, weapon.options.damage, weapon.options.knockbackForce, knockbackAngle));
+            this.game.networkController.sendMessage(new message(id, weapon.options.damage, weapon.options.knockbackForce, knockbackAngle));
         }
     }
 
@@ -56,7 +65,15 @@ export class WeaponController
                     this.hitZombieHumanoids.clear();
                 }
 
-                this.game.zombieControler.zombiesMap.forEach((zombie, zombieId) => this.handleCollision(weapon, zombie, zombieId, this.hitZombieHumanoids));
+                for (const [zombieId, zombie] of this.game.zombieControler.zombiesMap)
+                {
+                    this.handleCollision(weapon, zombie, zombieId, this.hitZombieHumanoids, AttackZombie);
+                }
+
+                for (const player of this.game.networkController.players.getPlayers())
+                {
+                    this.handleCollision(weapon, player.humanoid, player.userId, this.hitPlayerHumanoids, AttackPlayer);
+                }
             }
 
             weapon.update(pointer.x, pointer.y);
